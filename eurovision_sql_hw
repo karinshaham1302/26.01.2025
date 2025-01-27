@@ -1,0 +1,121 @@
+CREATE TABLE IF NOT EXISTS competitions (
+    competition_year INTEGER PRIMARY KEY,
+    hosting_country TEXT NOT NULL,
+    winning_country_name TEXT NOT NULL,
+    song_id INTEGER NOT NULL,
+    singer_id INTEGER NOT NULL,
+    FOREIGN KEY (winning_country_name) REFERENCES countries(country_name)
+        ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (song_id) REFERENCES songs(song_id)
+        ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (singer_id) REFERENCES singers(singer_id)
+        ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+
+INSERT INTO competitions (competition_year, hosting_country, winning_country_name,
+song_id, singer_id) VALUES
+(2024, 'Sweden', 'Switzerland', 1, 1),
+(2023, 'United Kingdom', 'Sweden', 2, 2),
+(2022, 'Italy', 'Ukraine', 3, 3),
+(2021, 'Netherlands', 'Italy', 4, 4),
+(2019, 'Israel', 'Netherlands', 5, 5),
+(2018, 'Portugal', 'Israel', 6, 6),
+(2017, 'Ukraine', 'Portugal', 7, 7),
+(2016, 'Sweden', 'Ukraine', 8, 8),
+(2015, 'Austria', 'Sweden', 9, 9),
+(2014, 'Denmark', 'Austria', 10, 10),
+(2013, 'Sweden', 'Denmark', 11, 11),
+(2012, 'Azerbaijan', 'Sweden', 12, 2);
+
+
+
+
+CREATE TABLE IF NOT EXISTS countries (
+    country_name TEXT PRIMARY KEY,
+    country_language TEXT NOT NULL,
+    country_capital TEXT NOT NULL
+);
+
+
+INSERT INTO countries (country_name, country_language, country_capital) VALUES
+('Sweden', 'Swedish', 'Stockholm'),
+('Switzerland', 'German', 'Bern'),
+('United Kingdom', 'English', 'London'),
+('Ukraine', 'Ukrainian', 'Kyiv'),
+('Italy', 'Italian', 'Rome'),
+('Israel', 'Hebrew', 'Jerusalem'),
+('Netherlands', 'Dutch', 'Amsterdam'),
+('Portugal', 'Portuguese', 'Lisbon'),
+('Denmark', 'Danish', 'Copenhagen'),
+('Austria', 'German', 'Vienna'),
+('Azerbaijan', 'Azerbaijani', 'Baku');
+
+
+
+
+CREATE TABLE IF NOT EXISTS songs (
+    song_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    song_name TEXT NOT NULL,
+    song_language TEXT NOT NULL
+);
+
+
+INSERT INTO songs (song_name, song_language) VALUES
+('The Code', 'English'),
+('Tattoo', 'English'),
+('Stefania', 'Ukrainian'),
+('Zitti e buoni', 'Italian'),
+('Arcade', 'English'),
+('Toy', 'English'),
+('Amar pelos dois', 'Portuguese'),
+('1944', 'English/Ukrainian'),
+('Heroes', 'English'),
+('Rise Like a Phoenix', 'English'),
+('Only Teardrops', 'English'),
+('Euphoria', 'English');
+
+
+
+
+CREATE TABLE IF NOT EXISTS singers (
+    singer_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    singer_name TEXT NOT NULL
+);
+
+
+INSERT INTO singers (singer_name) VALUES
+('Nemo'),
+('Loreen'),
+('Kalush Orchestra'),
+('Måneskin'),
+('Duncan Laurence'),
+('Netta'),
+('Salvador Sobral'),
+('Jamala'),
+('Måns Zelmerlöw'),
+('Conchita Wurst'),
+('Emmelie de Forest');
+
+
+
+
+SELECT DISTINCT
+    c.competition_year,
+    c.hosting_country,
+    c.winning_country_name,
+    co.country_language AS winning_country_language,
+    co.country_capital AS winning_country_capital,
+    s.song_name,
+    s.song_language,
+    sn.singer_name
+FROM competitions c
+LEFT JOIN countries co ON c.winning_country_name = co.country_name
+LEFT JOIN songs s ON c.song_id = s.song_id
+LEFT JOIN singers sn ON c.singer_id = sn.singer_id
+ORDER BY c.competition_year DESC;
+
+
+
+
+
